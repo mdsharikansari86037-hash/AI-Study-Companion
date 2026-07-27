@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Md Sharik Ansari - Premium 3D AI Analyzer</title>
+    <!-- External library for downloading the analysis report -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* 3D Geometric & Glassmorphism Premium Theme */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #0f172a 0%, #0d9488 100%);
+            background-attachment: fixed;
+            color: #ffffff; 
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
+        }
+
+        /* 3D Glass Panel Effect */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+        }
+
+        /* Sidebar Styling */
+        .sidebar { 
+            width: 280px; 
+            margin: 20px;
+            padding: 25px; 
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar h3 { font-size: 1.2rem; color: #5eead4; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .history-list { list-style: none; overflow-y: auto; flex: 1; }
+        .history-item { 
+            padding: 15px; 
+            background: rgba(0, 0, 0, 0.2); 
+            margin-bottom: 12px; 
+            border-radius: 10px; 
+            font-size: 0.95rem; 
+            border-left: 4px solid #0d9488;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .history-item:hover { transform: translateX(5px); background: rgba(0, 0, 0, 0.4); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+        /* Developer Credit Badge */
+        .dev-badge {
+            margin-top: auto;
+            text-align: center;
+            padding-top: 20px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Main Workspace */
+        .main-container { flex: 1; display: flex; flex-direction: column; margin: 20px 20px 20px 0; }
+        
+        .header { 
+            padding: 20px 30px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px;
+        }
+        .brand-name { 
+            font-size: 2.2rem; 
+            font-weight: 900; 
+            background: linear-gradient(to right, #5eead4, #38bdf8); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            text-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            letter-spacing: 1px;
+        }
+
+        .content-area { display: flex; flex: 1; gap: 20px; overflow: hidden; }
+        .panel { flex: 1; display: flex; flex-direction: column; padding: 25px; }
+        .panel-title { font-size: 1.3rem; margin-bottom: 20px; color: #f8fafc; font-weight: 600; display: flex; justify-content: space-between; align-items: center; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
+        
+        /* 3D Interactive Buttons */
+        .btn { 
+            background: linear-gradient(135deg, #0d9488, #0369a1); 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-size: 0.95rem; 
+            font-weight: bold; 
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3), inset 0 2px 2px rgba(255,255,255,0.2);
+            transition: all 0.2s ease;
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4); }
+        .btn:active { transform: translateY(1px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); }
+
+        /* PDF Upload Area */
+        .upload-box { 
+            border: 2px dashed rgba(94, 234, 212, 0.5); 
+            border-radius: 16px; 
+            padding: 40px 20px; 
+            text-align: center; 
+            background: rgba(0,0,0,0.15); 
+            cursor: pointer; 
+            margin-bottom: 20px; 
+            transition: all 0.3s ease;
+        }
+        .upload-box:hover { background: rgba(0,0,0,0.3); border-color: #5eead4; transform: scale(1.02); }
+
+        /* Output and Chat Areas */
+        .result-box, .chat-box { 
+            flex: 1; 
+            background: rgba(15, 23, 42, 0.6); 
+            border-radius: 12px; 
+            padding: 20px; 
+            overflow-y: auto; 
+            border: 1px solid rgba(255,255,255,0.05); 
+            font-size: 1rem; 
+            line-height: 1.6; 
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
+            color: #e2e8f0;
+        }
+        .chat-box { margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px; }
+        
+        .message { max-width: 85%; padding: 14px 18px; border-radius: 15px; font-size: 0.95rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .msg-ai { background: rgba(255, 255, 255, 0.1); border-bottom-left-radius: 2px; border: 1px solid rgba(255,255,255,0.05); }
+        .msg-user { background: linear-gradient(135deg, #0284c7, #0369a1); align-self: flex-end; border-bottom-right-radius: 2px; }
+
+        /* Input Configuration */
+        .input-area { display: flex; gap: 15px; }
+        .input-area input { 
+            flex: 1; 
+            padding: 15px; 
+            background: rgba(0, 0, 0, 0.3); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            border-radius: 12px; 
+            outline: none; 
+            color: white; 
+            font-size: 1rem; 
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .input-area input:focus { border-color: #5eead4; background: rgba(0, 0, 0, 0.5); }
+    </style>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar glass-panel">
+        <h3>Analysis History</h3>
+        <ul class="history-list" id="historyList">
+            <li class="history-item" style="border-left-color: transparent; text-align: center;">No history available</li>
+        </ul>
+        
+        <!-- Developer Signature -->
+        <div class="dev-badge">
+            Dev by Sharik
+        </div>
+    </div>
+    
+    <!-- Main Application Area -->
+    <div class="main-container">
+        
+        <!-- Application Header -->
+        <div class="header glass-panel">
+            <div class="brand-name">Md Sharik Ansari</div>
+            <button class="btn">User Profile</button>
+        </div>
+        
+        <div class="content-area">
+            
+            <!-- Document Upload and Analysis Panel -->
+            <div class="panel glass-panel">
+                <label class="upload-box">
+                    <input type="file" id="pdfUpload" accept=".pdf" style="display: none;">
+                    <h3 style="color: #5eead4; margin-bottom: 8px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">+ Drop PDF Here</h3>
+                    <p style="color: #cbd5e1;">Tap to upload and analyze your document</p>
+                </label>
+                
+                <div class="panel-title">
+                    <span>Calculations & Topics</span>
+                    <button class="btn" onclick="downloadPDF()">Download Data</button>
+                </div>
+                
+                <div class="result-box" id="analysisResult">
+                    <p style="color: #64748b; text-align: center; margin-top: 50px;">Waiting for your premium document...</p>
+                </div>
+            </div>
+
+            <!-- AI Assistant Panel -->
+            <div class="panel glass-panel">
+                <div class="panel-title">Smart Study Assistant</div>
+                
+                <div class="chat-box" id="chatBox">
+                    <div class="message msg-ai">Hello! I am your AI study assistant. Upload a PDF document first, and then ask me any questions regarding its content.</div>
+                </div>
+                
+                <div class="input-area">
+                    <input type="text" id="userInput" placeholder="Type your query here..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                    <button class="btn" onclick="sendChatMessage()">Send Request</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        // Feature: Download the analysis report as a PDF file
+        function downloadPDF() {
+            const element = document.getElementById('analysisResult');
+            
+            // Apply temporary styling for better PDF rendering
+            element.style.background = "#0f172a";
+            element.style.color = "#ffffff";
+            
+            html2pdf().from(element).save('Analysis_Report.pdf').then(() => {
+                element.style.background = ""; // Restore original background after download
+            });
+        }
+
+        // Feature: Handle PDF file upload and communicate with the backend server
+        document.getElementById('pdfUpload').addEventListener('change', async function(event) {
+            const file = event.target.files[0];
+            
+            if (file) {
+                const analysisResult = document.getElementById('analysisResult');
+                analysisResult.innerHTML = `<h3 style="color: #38bdf8;">Processing document: ${file.name}... Please wait.</h3>`;
+                
+                // Update the history sidebar
+                const historyList = document.getElementById('historyList');
+                if (historyList.innerHTML.includes("No history available")) {
+                    historyList.innerHTML = '';
+                }
+                historyList.innerHTML = `<li class="history-item">${file.name}</li>` + historyList.innerHTML;
+
+                // Prepare the file data for the server request
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    // Send the file to the local Python server
+                    const response = await fetch('http://127.0.0.1:5000/analyze', { 
+                        method: 'POST', 
+                        body: formData 
+                    });
+                    
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Display the successfully generated AI analysis
+                        analysisResult.innerHTML = `
+                            <h3 style="color: #5eead4; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px;">
+                                Document: ${file.name}
+                            </h3>
+                            <div>${data.analysis}</div>
+                        `;
+                        
+                        // Notify the user in the chat box
+                        document.getElementById('chatBox').innerHTML += `
+                            <div class="message msg-ai">
+                                I have successfully processed <b>${file.name}</b>. You can now ask me questions about the formulas or topics inside it!
+                            </div>
+                        `;
+                    } else {
+                        // Handle server-side errors
+                        analysisResult.innerHTML = `<p style="color: #ef4444;">Server Error: ${data.error}</p>`;
+                    }
+                } catch (error) {
+                    // Handle network or connection errors
+                    analysisResult.innerHTML = `<p style="color: #ef4444;">Connection Failed: Please ensure your Python server (app.py) is running in the terminal.</p>`;
+                }
+            }
+        });
+
+        // Feature: Handle live chat messages with the AI assistant
+        async function sendChatMessage() {
+            const inputField = document.getElementById('userInput');
+            const chatBox = document.getElementById('chatBox');
+            const message = inputField.value.trim();
+            
+            // Prevent sending empty messages
+            if (message === '') return;
+
+            // Display the user's message in the chat interface
+            chatBox.innerHTML += `<div class="message msg-user">${message}</div>`;
+            inputField.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Display a temporary loading indicator
+            const loadingId = "load-" + Date.now();
+            chatBox.innerHTML += `<div class="message msg-ai" id="${loadingId}">Analyzing query...</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                // Send the chat message to the server
+                const response = await fetch('http://127.0.0.1:5000/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const data = await response.json();
+                
+                // Remove the loading indicator once a response is received
+                document.getElementById(loadingId).remove(); 
+
+                if (response.ok) {
+                    // Format markdown text (e.g., bolding) to valid HTML
+                    let formattedReply = data.reply.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+                    chatBox.innerHTML += `<div class="message msg-ai">${formattedReply}</div>`;
+                } else {
+                    chatBox.innerHTML += `<div class="message msg-ai" style="color: #ef4444;">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                chatBox.innerHTML += `<div class="message msg-ai" style="color: #ef4444;">Connection Error: Cannot connect to the AI server. Ensure app.py is running.</div>`;
+            }
+            
+            // Ensure the chat box scrolls to the latest message
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
