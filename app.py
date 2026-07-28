@@ -15,7 +15,7 @@ if API_KEY:
 else:
     print("Warning: API Key not found in environment!")
 
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('gemini-3.6 Flash')
 
 current_pdf_context = ""
 
